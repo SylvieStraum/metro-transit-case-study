@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import React, { useCallback, useEffect, useState } from 'react';
+//import styled from 'styled-components';
 import Select from 'react-select'
 import axios from 'axios';
-import { OptionProps, RouteProps, DirectionAndStopProps, TimePointDepartureProps } from '../types/transitApitTypes';
+import { OptionProps, RouteProps, DirectionAndStopProps, TimePointDepartureProps, StopDetailProps } from '../types/transitApitTypes';
+import { DataTable } from '../components/DataTable';
 
 export const NextTrip = () => {
   const [allRoutes, setAllRoutes] = useState<OptionProps[]>([])
@@ -12,6 +13,7 @@ export const NextTrip = () => {
   const [selectedRoute, setSelectedRoute] = useState<RouteProps>({ Description: '', ProviderID: 0, Route: 0 })
   const [selectedDirection, setSelectedDirection] = useState<DirectionAndStopProps>({ Text: '', Value: '' })
   const [selectedStop, setSelectedStop] = useState<DirectionAndStopProps>({ Text: '', Value: '' })
+  const [stopDetailInfo, setStopDetailInfo] = useState<StopDetailProps>({})
 
   useEffect(() => {
     fetchRoutes()
@@ -22,11 +24,13 @@ export const NextTrip = () => {
       case 1:
         setDirections([])
         setRouteStops([])
+        SetRouteDepartures([])
         setSelectedDirection({ Text: '', Value: '' })
         setSelectedStop({ Text: '', Value: '' })
         break;
       case 2:
         setRouteStops([])
+        SetRouteDepartures([])
         setSelectedStop({ Text: '', Value: '' })
         break;
       default:
@@ -56,13 +60,15 @@ export const NextTrip = () => {
   }
 
   const fetchRouteTimeDepartures = async (route: number, direction: string, stop: string) => {
-    const response = await axios.get(`https://svc.metrotransit.org/nextrip/${route}/${direction}/${stop}`)
-    SetRouteDepartures(response.data)
+    const departuresResponse = await axios.get(`https://svc.metrotransit.org/nextrip/${route}/${direction}/${stop}`)
+    const stopIdResponse = await axios.get(`https://svc.metrotransit.org/nextrip/stopid/${route}/${direction}/${stop}`)
+    SetRouteDepartures(departuresResponse.data)
+    setStopDetailInfo (stopIdResponse.data)
   }
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center' }}>
-      <div style={{ width: '50%' }}>
+    <div style={{ display: 'flex', alignItems: 'center', width: '100%', height: '100vh', overflowY: 'auto', flexDirection: 'column' }}>
+      <div style={{ width: '50%', display: 'flex', flexDirection: 'column' }}>
         <h1 style={{ textAlign: 'center' }}>Real Time Departures</h1>
         <Select options={allRoutes} onChange={(item) => {
           cascadeFilterReset(1)
@@ -83,6 +89,9 @@ export const NextTrip = () => {
           }} />
         }
       </div>
+      {
+        !!selectedStop.Value && <DataTable data={routeDepartures} stopInfo={stopDetailInfo}/>
+      }
 
 
     </div>

@@ -29,3 +29,10 @@ export interface TimePointDepartureProps {
   VehicleLatitude: number
   VehicleLongitude: number
 }
+
+export interface StopDetailProps {
+  Latitude?: number
+  Longitude?: number
+  StopID?: number
+  StopLabel?: string
+}
