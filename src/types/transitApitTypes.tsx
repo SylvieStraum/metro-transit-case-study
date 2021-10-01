@@ -1,8 +1,7 @@
-
 export interface RouteProps {
   Description: string,
   ProviderID: number,
-  Route: number
+  Route: string
 }
 
 export interface DirectionAndStopProps {
@@ -10,10 +9,10 @@ export interface DirectionAndStopProps {
   Value: string
 }
 
-export interface OptionProps {
-  value: any,
-  label: string
-}
+// export interface OptionProps {
+//   value: any,
+//   label: string
+// }
 
 export interface TimePointDepartureProps {
   Actual: boolean

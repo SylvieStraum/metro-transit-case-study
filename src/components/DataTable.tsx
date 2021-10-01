@@ -1,54 +1,64 @@
-import React, { useCallback } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { StopDetailProps, TimePointDepartureProps } from '../types/transitApitTypes';
 
+import '../App.css'
+
 interface TableProps {
   data: TimePointDepartureProps[]
-  stopInfo:StopDetailProps
+  stopInfo: StopDetailProps
 }
 
 export const DataTable = ({ data, stopInfo }: TableProps) => {
 
-  const tableTitles =(
-    <tr>
-      <th style={{textAlign:'left', width:'50%'}}>
+  const [isExpanded, setIsExpanded] = useState(false)
+
+
+  const tableTitles = (
+    <TableLabelDiv>
+      <h3>
         {stopInfo.StopLabel}
-      </th>
-      <th style={{textAlign:'right', width:'70%'}}>
-        #{stopInfo.StopID}
-      </th>
-    </tr>
+      </h3>
+      <p><strong>stop #</strong> {stopInfo.StopID}</p>
+    </TableLabelDiv>
   )
 
+ 
   const tableBody = (
-    !!data.length ? data.map((item:TimePointDepartureProps, index:number) => {
+    !!data.length ? data.map((item: TimePointDepartureProps, index: number) => {
       return (
-        <tr key={index}>
+        <TableRow key={index}>
           <td style={{ width: '20%' }}>
-            {item.Route}
+            <strong>{item.Route}</strong>
           </td>
           <td style={{ width: '60%' }}>
             {item.Description}
           </td>
           <td style={{ width: '20%' }}>
-            {item.DepartureText}
+            <strong>{item.DepartureText}</strong>
           </td>
-        </tr>
+        </TableRow>
       )
     })
-    :
-    <tr>
-      <td style={{width:'40%'}}>
-        No departures at this time
-      </td>
-    </tr>
+      :
+      <tr>
+        <td style={{ width: '40%' }}>
+          No departures at this time
+        </td>
+      </tr>
+  )
+
+  const tblFooter= (
+   <div style={{ alignItems:'center',  padding: '.5rem 1.2rem'}}>
+   {data.length > 5 && <><OpenCloseBtn className={isExpanded ? 'btn-expanded' : 'btn-collapsed'} onClick={()=>setIsExpanded(!isExpanded)} /> <strong>Departures</strong></>}
+    </div>
   )
 
 
   return <Container>
-    <Table>
+    {tableTitles}
+    <Table id='table' className={!isExpanded ? 'tbl-collapse' : ''}>
       <thead>
-        {tableTitles}
         <tr>
           <th style={{ width: '15%' }}>
             Route
@@ -65,22 +75,43 @@ export const DataTable = ({ data, stopInfo }: TableProps) => {
         {tableBody}
       </tbody>
     </Table>
+    {tblFooter}
   </Container>
 }
 
 const Container = styled.div`
+  transition: opacity .5s, transform .5s;
+  margin-top:40px;
+  margin-bottom:80px;
+  background-color: #f5f5f4;
   display: flex;
   flex-direction: column;
   flex: 1;
   width: 70%;
   text-align: left;
+  border:none;
 `
 
 const Table = styled.table`
   border-spacing: 0;
+  background-color: #f5f5f4;
+  transition: height 2s ease-in-out;
+  overflow-y: hidden;
+  height: 50%;
+
+  vertical-align: middle;
+  thead tr th {
+    background-color: #ffd200;
+    border-top: none;
+    border-bottom: none;
+    text-transform: uppercase;
+    letter-spacing: 1.28px;
+  }
 
   td,th {
+    border-bottom: 1px solid #8a8b8a;
     min-width: 2em;
+    padding: .75rem;
 
     &:first-child {
       padding-left: 1em;
@@ -88,7 +119,21 @@ const Table = styled.table`
 
     &:last-child {
       padding-right: 1em;
+      border-bottom:none;
     }
+  }
+`
+
+const TableLabelDiv = styled.div`
+  display:flex;
+  justify-content:space-between;
+  flex-direction:row;
+  align-items:center;
+  padding: 0 .75em 0 .75em;
+  span{
+    font-weight: 400;
+    line-height: 1.5;
+    color: #626462;
   }
 `
 
@@ -97,9 +142,24 @@ const TableRow = styled.tr`
   background-color: transparent };
 `
 
-const TableHeaderCellContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
+const OpenCloseBtn = styled.button`
+  background-repeat: no-repeat;
+  background-size: 1.25rem;
+  background-color: transparent;
+  width: 1.5rem;
+  height: 1.5rem;
+  top: .3rem;
+  left: 1rem;
+  border: 1px solid transparent;
+  padding: .375rem .75rem;
+  font-size: 1.4375rem;
+  cursor: pointer;
+
+  &:focus{
+
+  }
+  &:hover {
+    color: #626462;
+    text-decoration: none;
+}
 `
