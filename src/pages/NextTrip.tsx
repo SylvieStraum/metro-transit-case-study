@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import { useEffect, useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { RouteProps, DirectionAndStopProps, TimePointDepartureProps, StopDetailProps } from '../types/transitApitTypes';
 import { DataTable } from '../components/DataTable';
-import { CSSTransition, Transition } from 'react-transition-group';
-import arrows from '../assets/arrows.svg'
+import { CSSTransition } from 'react-transition-group';
+import { MetroSelect } from '../components/MetroSelect';
 
 import '../App.css'
 
@@ -66,75 +65,66 @@ export const NextTrip = () => {
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', width: '100%', overflowY: 'auto', flexDirection: 'column', marginTop:'10%' }}>
+    <div style={{ display: 'flex', alignItems: 'center', width: '100%', overflowY: 'auto', flexDirection: 'column', marginTop: '10%' }}>
       <img alt="metro transit home" src="https://www.metrotransit.org/img/MetroTransitLogo.svg" />
-      <div style={{ width: '30%', minWidth:'400px', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ width: '30%', minWidth: '400px', display: 'flex', flexDirection: 'column' }}>
         <h2 style={{ textAlign: 'center' }}>Real Time Departures</h2>
-        <MetroSelect name="bus routes"
+        <MetroSelect
           className="select-enter-done"
           value={selectedRoute}
           onChange={(event) => {
             cascadeFilterReset(1)
             setSelectedRoute(event.target.value)
             fetchRouteDirections(event.target.value)
-          }}>
-          <MetroOption value={''}>Select route</MetroOption>
-          {
-            !!allRoutes.length && allRoutes.map((item, i) =>
-              <MetroOption key={i} value={item.Route}>{item.Description}</MetroOption>)
-          }
-        </MetroSelect>
+          }}
+          defaultText="Select route"
+          data={allRoutes}
+        />
         {
           <CSSTransition
             in={!!selectedRoute}
-            timeout={{enter:300, exit:0}}
+            timeout={{ enter: 300, exit: 0 }}
             classNames="select"
             unmountOnExit
             mountOnEnter
           ><MetroSelect
-            name="route directions"
-            value={selectedDirection}
-            onChange={(event) => {
-              cascadeFilterReset(2)
-              setSelectedDirection(event.target.value)
-              fetchRouteStops(selectedRoute, event.target.value)
-            }}
-          >
-              <MetroOption>Select direction</MetroOption>
-              {
-                routeDirections.map((item, i) => <MetroOption key={i} value={item.Value}>{item.Text}</MetroOption>)
-              }
-            </MetroSelect>
+              value={selectedDirection}
+              className="select"
+              onChange={(event) => {
+                cascadeFilterReset(2)
+                setSelectedDirection(event.target!.value)
+                fetchRouteStops(selectedRoute, event.target.value)
+              }}
+              defaultText="Select direction"
+              data={routeDirections}
+            />
           </CSSTransition>
         }
         {
           <CSSTransition
             in={!!selectedDirection}
-            timeout={{enter:300, exit:0}}
+            timeout={{ enter: 300, exit: 0 }}
             classNames="select"
             unmountOnExit
             mountOnEnter
           >
             <MetroSelect
-              name="stops for bus route"
+              className="select"
               value={selectedStop}
               onChange={(event) => {
                 setSelectedStop(event.target.value)
                 fetchRouteTimeDepartures(selectedRoute, selectedDirection, event.target.value)
               }}
-            >
-              <option>Select stop</option>
-              {
-                routeStops.map((item, i) => <option key={i} value={item.Value}>{item.Text}</option>)
-              }
-            </MetroSelect>
+              defaultText="Select stop"
+              data={routeStops}
+            />
           </CSSTransition>
         }
       </div>
       {
         <CSSTransition
           in={!!selectedStop}
-          timeout={{enter:300, exit:0}}
+          timeout={{ enter: 300, exit: 0 }}
           classNames="container"
           unmountOnExit
           mountOnEnter
@@ -145,30 +135,3 @@ export const NextTrip = () => {
     </div>
   )
 }
-
-const MetroSelect = styled.select`
-  background: url(${arrows})
-  no-repeat right .75rem center/8px 10px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  vertical-align: middle;
-  margin-top: 20px;
-  width: 100%;
-  height: 50px;
-  font-size: 1.125rem!important;
-  padding: .75em;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #626462;
-  transition: background-color .5s ease-in-out,border-color .5s ease-in-out,box-shadow .5s ease-in-out, opacity .5s, transform .5s;
-}
-`
-
-const MetroOption = styled.option`
-font-weight: normal;
-display: block;
-white-space: nowrap;
-min-height: 1.2em;
-padding: 0px 2px 1px;
-`

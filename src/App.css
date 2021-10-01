@@ -12,7 +12,7 @@
 
 .container-enter{
   opacity: 0;
-  transform: scale(0.9);
+  transform: scale(0.5);
 }
 .container-enter-done{
   opacity:1;
@@ -24,15 +24,23 @@
 
 .btn-collapsed{
   background-image: url(https://www.metrotransit.org/img/svg/circle-plus-blue.svg);
-  transition: background-image 280ms;
+  transition: background-image 300ms transform 300ms;
 }
 
 .btn-expanded{
   background-image: url(https://www.metrotransit.org/img/svg/circle-minus-blue.svg);
-  transition: background-image 280ms;
+  transition: background-image 300ms transform 300ms;
 }
 
-.btn-expand{
-  height: 40px;
+.tbl-expanded{
+  height: 100%;
 }
 
+.tbl-collapsed{
+  height: 50%;
+  min-height: 200px;
+}
+
+@media screen and (max-width: 1024px) {
+ 
+ }

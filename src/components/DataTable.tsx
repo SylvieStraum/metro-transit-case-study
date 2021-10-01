@@ -23,9 +23,9 @@ export const DataTable = ({ data, stopInfo }: TableProps) => {
     </TableLabelDiv>
   )
 
- 
+
   const tableBody = (
-    !!data.length ? data.map((item: TimePointDepartureProps, index: number) => {
+    !!data.length && data.map((item: TimePointDepartureProps, index: number) => {
       return (
         <TableRow key={index}>
           <td style={{ width: '20%' }}>
@@ -40,24 +40,24 @@ export const DataTable = ({ data, stopInfo }: TableProps) => {
         </TableRow>
       )
     })
-      :
-      <tr>
-        <td style={{ width: '40%' }}>
-          No departures at this time
-        </td>
-      </tr>
   )
 
-  const tblFooter= (
-   <div style={{ alignItems:'center',  padding: '.5rem 1.2rem'}}>
-   {data.length > 5 && <><OpenCloseBtn className={isExpanded ? 'btn-expanded' : 'btn-collapsed'} onClick={()=>setIsExpanded(!isExpanded)} /> <strong>Departures</strong></>}
+  const tblFooter = (
+    <div style={{ alignItems: 'center', padding: '.5rem 1.2rem' }}>
+      {data.length ? <>
+        <OpenCloseBtn
+          className={isExpanded ? 'btn-expanded' : 'btn-collapsed'}
+          onClick={() => setIsExpanded(!isExpanded)} /> <strong>Departures</strong>
+      </> 
+      :
+      <p><strong>No departures at this time</strong></p>}
     </div>
   )
 
 
   return <Container>
     {tableTitles}
-    <Table id='table' className={!isExpanded ? 'tbl-collapse' : ''}>
+    <Table>
       <thead>
         <tr>
           <th style={{ width: '15%' }}>
@@ -71,7 +71,7 @@ export const DataTable = ({ data, stopInfo }: TableProps) => {
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody className={isExpanded ? 'tbl-expanded' : 'tbl-collapsed'}>
         {tableBody}
       </tbody>
     </Table>
@@ -95,9 +95,6 @@ const Container = styled.div`
 const Table = styled.table`
   border-spacing: 0;
   background-color: #f5f5f4;
-  transition: height 2s ease-in-out;
-  overflow-y: hidden;
-  height: 50%;
 
   vertical-align: middle;
   thead tr th {
@@ -105,11 +102,10 @@ const Table = styled.table`
     border-top: none;
     border-bottom: none;
     text-transform: uppercase;
-    letter-spacing: 1.28px;
+    letter-spacing: 1.28;
   }
 
   td,th {
-    border-bottom: 1px solid #8a8b8a;
     min-width: 2em;
     padding: .75rem;
 
@@ -119,8 +115,10 @@ const Table = styled.table`
 
     &:last-child {
       padding-right: 1em;
-      border-bottom:none;
     }
+  }
+  tbody{
+    transition: all 1s ease-in-out;
   }
 `
 
@@ -139,7 +137,7 @@ const TableLabelDiv = styled.div`
 
 const TableRow = styled.tr`
   height: 3em;
-  background-color: transparent };
+  background-color: transparent ;
 `
 
 const OpenCloseBtn = styled.button`
