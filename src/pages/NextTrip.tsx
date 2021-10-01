@@ -1,99 +1,128 @@
-import React, { useCallback, useEffect, useState } from 'react';
-//import styled from 'styled-components';
-import Select from 'react-select'
-import axios from 'axios';
-import { OptionProps, RouteProps, DirectionAndStopProps, TimePointDepartureProps, StopDetailProps } from '../types/transitApitTypes';
+import { useEffect, useState } from 'react';
+import { RouteProps, DirectionAndStopProps, TimePointDepartureProps, StopDetailProps } from '../types/transitApiDataTypes';
 import { DataTable } from '../components/DataTable';
+import { CSSTransition } from 'react-transition-group';
+import { MetroSelect } from '../components/MetroSelect';
+
+import '../App.css'
+import { fetchRouteDirections, fetchRoutes, fetchRouteStops, fetchRouteTimeDepartures } from '../services';
 
 export const NextTrip = () => {
-  const [allRoutes, setAllRoutes] = useState<OptionProps[]>([])
-  const [directions, setDirections] = useState<OptionProps[]>([])
-  const [routeStops, setRouteStops] = useState<OptionProps[]>([])
-  const [routeDepartures, SetRouteDepartures] = useState<TimePointDepartureProps[]>([])
-  const [selectedRoute, setSelectedRoute] = useState<RouteProps>({ Description: '', ProviderID: 0, Route: 0 })
-  const [selectedDirection, setSelectedDirection] = useState<DirectionAndStopProps>({ Text: '', Value: '' })
-  const [selectedStop, setSelectedStop] = useState<DirectionAndStopProps>({ Text: '', Value: '' })
+  const [allRoutes, setAllRoutes] = useState<RouteProps[]>([])
+  const [routeDirections, setRouteDirections] = useState<DirectionAndStopProps[]>([])
+  const [routeStops, setRouteStops] = useState<DirectionAndStopProps[]>([])
+  const [routeDepartures, setRouteDepartures] = useState<TimePointDepartureProps[]>([])
+  const [selectedRoute, setSelectedRoute] = useState<string>('')
+  const [selectedDirection, setSelectedDirection] = useState<string>('')
+  const [selectedStop, setSelectedStop] = useState<string>('')
   const [stopDetailInfo, setStopDetailInfo] = useState<StopDetailProps>({})
 
   useEffect(() => {
-    fetchRoutes()
+    initialRouteGet()
   }, [])
+
+  const initialRouteGet = async() =>{
+    let allRoutesResponse = await fetchRoutes()
+    if(allRoutesResponse?.data)  setAllRoutes(allRoutesResponse.data ?? [])
+  }
 
   const cascadeFilterReset = (num: number) => {
     switch (num) {
       case 1:
-        setDirections([])
+        setRouteDirections([])
         setRouteStops([])
-        SetRouteDepartures([])
-        setSelectedDirection({ Text: '', Value: '' })
-        setSelectedStop({ Text: '', Value: '' })
+        setRouteDepartures([])
+        setSelectedDirection('')
+        setSelectedStop('')
+        setStopDetailInfo({})
         break;
       case 2:
         setRouteStops([])
-        SetRouteDepartures([])
-        setSelectedStop({ Text: '', Value: '' })
+        setRouteDepartures([])
+        setSelectedStop('')
+        setStopDetailInfo({})
         break;
       default:
         break;
     }
   }
 
-  const fetchRoutes = async () => {
-    const response = await axios.get('https://svc.metrotransit.org/nextrip/routes')
-    setAllRoutes(response.data.map((item: RouteProps) => {
-      return { value: item, label: item.Description }
-    }))
-  }
-
-  const fetchRouteDirections = async (route: number) => {
-    const response = await axios.get(`https://svc.metrotransit.org/nextrip/Directions/${route}`)
-    setDirections(response.data.map((item: DirectionAndStopProps) => {
-      return { value: item, label: item.Text }
-    }))
-  }
-
-  const fetchRouteStops = async (route: number, direction: string) => {
-    const response = await axios.get(`https://svc.metrotransit.org/nextrip/Stops/${route}/${direction}`)
-    setRouteStops(response.data.map((item: DirectionAndStopProps) => {
-      return { value: item, label: item.Text }
-    }))
-  }
-
-  const fetchRouteTimeDepartures = async (route: number, direction: string, stop: string) => {
-    const departuresResponse = await axios.get(`https://svc.metrotransit.org/nextrip/${route}/${direction}/${stop}`)
-    const stopIdResponse = await axios.get(`https://svc.metrotransit.org/nextrip/stopid/${route}/${direction}/${stop}`)
-    SetRouteDepartures(departuresResponse.data)
-    setStopDetailInfo (stopIdResponse.data)
-  }
-
   return (
-    <div style={{ display: 'flex', alignItems: 'center', width: '100%', height: '100vh', overflowY: 'auto', flexDirection: 'column' }}>
-      <div style={{ width: '50%', display: 'flex', flexDirection: 'column' }}>
-        <h1 style={{ textAlign: 'center' }}>Real Time Departures</h1>
-        <Select options={allRoutes} onChange={(item) => {
-          cascadeFilterReset(1)
-          setSelectedRoute(item?.value)
-          fetchRouteDirections(item?.value.Route)
-        }} />
+    <div style={{ display: 'flex', alignItems: 'center', width: '100%', overflowY: 'auto', flexDirection: 'column', marginTop: '10%' }}>
+      <img alt="metro transit home" src="https://www.metrotransit.org/img/MetroTransitLogo.svg" />
+      <div style={{ width: '30%', minWidth: '400px', display: 'flex', flexDirection: 'column' }}>
+        <h2 style={{ textAlign: 'center' }}>Real Time Departures</h2>
+        <MetroSelect
+          className="select-enter-done"
+          value={selectedRoute}
+          onChange={(event) => {
+            cascadeFilterReset(1)
+            setSelectedRoute(event.target.value)
+            fetchRouteDirections(event.target.value)
+            .then(response=> response?.success && setRouteDirections(response.data))
+          }}
+          defaultText="Select route"
+          data={allRoutes}
+        />
         {
-          !!directions.length && <Select options={directions} onChange={(item) => {
-            cascadeFilterReset(2)
-            setSelectedDirection(item?.value)
-            fetchRouteStops(selectedRoute?.Route, item?.value.Value)
-          }} />
+          <CSSTransition
+            in={!!selectedRoute}
+            timeout={{ enter: 300, exit: 0 }}
+            classNames="select"
+            unmountOnExit
+            mountOnEnter
+          ><MetroSelect
+              value={selectedDirection}
+              className="select"
+              onChange={(event) => {
+                cascadeFilterReset(2)
+                setSelectedDirection(event.target!.value)
+                fetchRouteStops(selectedRoute, event.target.value)
+                .then(response=> response?.success && setRouteStops(response.data))
+              }}
+              defaultText="Select direction"
+              data={routeDirections}
+            />
+          </CSSTransition>
         }
         {
-          !!routeStops.length && <Select options={routeStops} onChange={(item) => {
-            setSelectedStop(item?.value)
-            fetchRouteTimeDepartures(selectedRoute.Route, selectedDirection.Value, item?.value.Value)
-          }} />
+          <CSSTransition
+            in={!!selectedDirection}
+            timeout={{ enter: 300, exit: 0 }}
+            classNames="select"
+            unmountOnExit
+            mountOnEnter
+          >
+            <MetroSelect
+              className="select"
+              value={selectedStop}
+              onChange={(event) => {
+                setSelectedStop(event.target.value)
+                fetchRouteTimeDepartures(selectedRoute, selectedDirection, event.target.value)
+                .then(response=>{ 
+                  if(response?.success){
+                  setRouteDepartures(response.departuresData.data)
+                  setStopDetailInfo(response.stopDetailData.data)
+                  }
+                })
+              }}
+              defaultText="Select stop"
+              data={routeStops}
+            />
+          </CSSTransition>
         }
       </div>
       {
-        !!selectedStop.Value && <DataTable data={routeDepartures} stopInfo={stopDetailInfo}/>
+        <CSSTransition
+          in={!!routeDepartures && !!stopDetailInfo.StopID}
+          timeout={{ enter: 300, exit: 0 }}
+          classNames="container"
+          unmountOnExit
+          mountOnEnter
+        >
+          <DataTable data={routeDepartures} stopInfo={stopDetailInfo} />
+        </CSSTransition>
       }
-
-
     </div>
   )
 }

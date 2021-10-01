@@ -1,54 +1,67 @@
-import React, { useCallback } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
-import { StopDetailProps, TimePointDepartureProps } from '../types/transitApitTypes';
+import { StopDetailProps, TimePointDepartureProps } from '../types/transitApiDataTypes';
+import '../App.css'
 
 interface TableProps {
   data: TimePointDepartureProps[]
-  stopInfo:StopDetailProps
+  stopInfo: StopDetailProps
 }
 
 export const DataTable = ({ data, stopInfo }: TableProps) => {
 
-  const tableTitles =(
-    <tr>
-      <th style={{textAlign:'left', width:'50%'}}>
-        {stopInfo.StopLabel}
-      </th>
-      <th style={{textAlign:'right', width:'70%'}}>
-        #{stopInfo.StopID}
-      </th>
-    </tr>
-  )
+  const [isExpanded, setIsExpanded] = useState(false)
 
+
+  const tableTitles: JSX.Element = (
+    <TableLabelDiv>
+      <h3>
+        {stopInfo.StopLabel}
+      </h3>
+      <p><strong>stop #</strong> {stopInfo.StopID}</p>
+    </TableLabelDiv>
+  )
+   
   const tableBody = (
-    !!data.length ? data.map((item:TimePointDepartureProps, index:number) => {
+    !!data.length && data.map((item: TimePointDepartureProps, index: number) => {
+      if(!isExpanded && index>Math.min(data.length/2, 4)){
+        return
+      }
       return (
-        <tr key={index}>
+        <TableRow key={index}>
           <td style={{ width: '20%' }}>
-            {item.Route}
+            <strong>{item.Route}</strong>
           </td>
           <td style={{ width: '60%' }}>
             {item.Description}
           </td>
           <td style={{ width: '20%' }}>
-            {item.DepartureText}
+            <strong>{item.DepartureText}</strong>
           </td>
-        </tr>
+        </TableRow>
       )
     })
-    :
-    <tr>
-      <td style={{width:'40%'}}>
-        No departures at this time
+  )
+
+  const tblFooter: JSX.Element = (
+    <TableRow>
+      <td colSpan={4}>
+        {data.length ? <>
+          <OpenCloseBtn
+            className={isExpanded ? 'btn-expanded' : 'btn-collapsed'}
+            onClick={() => setIsExpanded(!isExpanded)} /> <strong>Departures</strong>
+        </>
+          :
+          <p><strong>No departures at this time</strong></p>}
       </td>
-    </tr>
+    </TableRow>
   )
 
 
   return <Container>
+    {tableTitles}
     <Table>
       <thead>
-        {tableTitles}
         <tr>
           <th style={{ width: '15%' }}>
             Route
@@ -61,26 +74,46 @@ export const DataTable = ({ data, stopInfo }: TableProps) => {
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody className={isExpanded ? 'tbl-expanded' : 'tbl-collapsed'}>
         {tableBody}
       </tbody>
+      <tfoot>
+        {tblFooter}
+      </tfoot>
     </Table>
   </Container>
 }
 
 const Container = styled.div`
+  transition: opacity .5s, transform .5s;
+  margin-top:40px;
+  margin-bottom:80px;
+  background-color: #f5f5f4;
   display: flex;
   flex-direction: column;
   flex: 1;
   width: 70%;
   text-align: left;
+  border:none;
 `
 
 const Table = styled.table`
   border-spacing: 0;
+  background-color: #f5f5f4;
+  transition: all 1s ease-in-out;
+
+  vertical-align: middle;
+  thead tr th {
+    background-color: #ffd200;
+    border-top: none;
+    border-bottom: none;
+    text-transform: uppercase;
+    letter-spacing: 1.28;
+  }
 
   td,th {
     min-width: 2em;
+    padding: .75rem;
 
     &:first-child {
       padding-left: 1em;
@@ -90,16 +123,47 @@ const Table = styled.table`
       padding-right: 1em;
     }
   }
+  tbody{
+    transition: all 1s ease-in-out;
+  }
+`
+
+const TableLabelDiv = styled.div`
+  display:flex;
+  justify-content:space-between;
+  flex-direction:row;
+  align-items:center;
+  padding: 0 .75em 0 .75em;
+  span{
+    font-weight: 400;
+    line-height: 1.5;
+    color: #626462;
+  }
 `
 
 const TableRow = styled.tr`
   height: 3em;
-  background-color: transparent };
+  background-color: transparent ;
 `
 
-const TableHeaderCellContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
+const OpenCloseBtn = styled.button`
+  background-repeat: no-repeat;
+  background-size: 1.25rem;
+  background-color: transparent;
+  width: 1.5rem;
+  height: 1.5rem;
+  top: .3rem;
+  left: 1rem;
+  border: 1px solid transparent;
+  padding: .375rem .75rem;
+  font-size: 1.4375rem;
+  cursor: pointer;
+
+  &:focus{
+
+  }
+  &:hover {
+    color: #626462;
+    text-decoration: none;
+}
 `
