@@ -9,11 +9,6 @@ export interface DirectionAndStopProps {
   Value: string
 }
 
-// export interface OptionProps {
-//   value: any,
-//   label: string
-// }
-
 export interface TimePointDepartureProps {
   Actual: boolean
   BlockNumber: number

@@ -14,7 +14,7 @@ export const DataTable = ({ data, stopInfo }: TableProps) => {
   const [isExpanded, setIsExpanded] = useState(false)
 
 
-  const tableTitles = (
+  const tableTitles: JSX.Element = (
     <TableLabelDiv>
       <h3>
         {stopInfo.StopLabel}
@@ -42,16 +42,18 @@ export const DataTable = ({ data, stopInfo }: TableProps) => {
     })
   )
 
-  const tblFooter = (
-    <div style={{ alignItems: 'center', padding: '.5rem 1.2rem' }}>
-      {data.length ? <>
-        <OpenCloseBtn
-          className={isExpanded ? 'btn-expanded' : 'btn-collapsed'}
-          onClick={() => setIsExpanded(!isExpanded)} /> <strong>Departures</strong>
-      </> 
-      :
-      <p><strong>No departures at this time</strong></p>}
-    </div>
+  const tblFooter: JSX.Element = (
+    <TableRow>
+      <td colSpan={4}>
+        {data.length ? <>
+          <OpenCloseBtn
+            className={isExpanded ? 'btn-expanded' : 'btn-collapsed'}
+            onClick={() => setIsExpanded(!isExpanded)} /> <strong>Departures</strong>
+        </>
+          :
+          <p><strong>No departures at this time</strong></p>}
+      </td>
+    </TableRow>
   )
 
 
@@ -74,8 +76,10 @@ export const DataTable = ({ data, stopInfo }: TableProps) => {
       <tbody className={isExpanded ? 'tbl-expanded' : 'tbl-collapsed'}>
         {tableBody}
       </tbody>
+      <tfoot>
+        {tblFooter}
+      </tfoot>
     </Table>
-    {tblFooter}
   </Container>
 }
 

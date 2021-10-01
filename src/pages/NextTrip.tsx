@@ -6,19 +6,20 @@ import { CSSTransition } from 'react-transition-group';
 import { MetroSelect } from '../components/MetroSelect';
 
 import '../App.css'
+import { fetchRouteDirections, fetchRoutes, fetchRouteStops, fetchRouteTimeDepartures } from '../services';
 
 export const NextTrip = () => {
   const [allRoutes, setAllRoutes] = useState<RouteProps[]>([])
   const [routeDirections, setRouteDirections] = useState<DirectionAndStopProps[]>([])
   const [routeStops, setRouteStops] = useState<DirectionAndStopProps[]>([])
-  const [routeDepartures, SetRouteDepartures] = useState<TimePointDepartureProps[]>([])
+  const [routeDepartures, setRouteDepartures] = useState<TimePointDepartureProps[]>([])
   const [selectedRoute, setSelectedRoute] = useState<string>('')
   const [selectedDirection, setSelectedDirection] = useState<string>('')
   const [selectedStop, setSelectedStop] = useState<string>('')
   const [stopDetailInfo, setStopDetailInfo] = useState<StopDetailProps>({})
 
   useEffect(() => {
-    fetchRoutes()
+    fetchRoutes().then(response=> setAllRoutes(response))
   }, [])
 
   const cascadeFilterReset = (num: number) => {
@@ -26,42 +27,20 @@ export const NextTrip = () => {
       case 1:
         setRouteDirections([])
         setRouteStops([])
-        SetRouteDepartures([])
+        setRouteDepartures([])
         setSelectedDirection('')
         setSelectedStop('')
         setStopDetailInfo({})
         break;
       case 2:
         setRouteStops([])
-        SetRouteDepartures([])
+        setRouteDepartures([])
         setSelectedStop('')
         setStopDetailInfo({})
         break;
       default:
         break;
     }
-  }
-
-  const fetchRoutes = async () => {
-    const response: AxiosResponse<RouteProps[]> = await axios.get('https://svc.metrotransit.org/nextrip/routes')
-    setAllRoutes(response.data)
-  }
-
-  const fetchRouteDirections = async (route: string) => {
-    const response: AxiosResponse<DirectionAndStopProps[]> = await axios.get(`https://svc.metrotransit.org/nextrip/Directions/${route}`)
-    setRouteDirections(response.data)
-  }
-
-  const fetchRouteStops = async (route: string, direction: string) => {
-    const response: AxiosResponse<DirectionAndStopProps[]> = await axios.get(`https://svc.metrotransit.org/nextrip/Stops/${route}/${direction}`)
-    setRouteStops(response.data)
-  }
-
-  const fetchRouteTimeDepartures = async (route: string, direction: string, stop: string) => {
-    const departuresResponse: AxiosResponse<TimePointDepartureProps[]> = await axios.get(`https://svc.metrotransit.org/nextrip/${route}/${direction}/${stop}`)
-    const stopIdResponse: AxiosResponse<StopDetailProps> = await axios.get(`https://svc.metrotransit.org/nextrip/stopid/${route}/${direction}/${stop}`)
-    SetRouteDepartures(departuresResponse.data)
-    setStopDetailInfo(stopIdResponse.data)
   }
 
   return (
@@ -76,6 +55,7 @@ export const NextTrip = () => {
             cascadeFilterReset(1)
             setSelectedRoute(event.target.value)
             fetchRouteDirections(event.target.value)
+            .then(response=>setRouteDirections(response))
           }}
           defaultText="Select route"
           data={allRoutes}
@@ -94,6 +74,7 @@ export const NextTrip = () => {
                 cascadeFilterReset(2)
                 setSelectedDirection(event.target!.value)
                 fetchRouteStops(selectedRoute, event.target.value)
+                .then(response=> setRouteStops(response))
               }}
               defaultText="Select direction"
               data={routeDirections}
@@ -114,6 +95,10 @@ export const NextTrip = () => {
               onChange={(event) => {
                 setSelectedStop(event.target.value)
                 fetchRouteTimeDepartures(selectedRoute, selectedDirection, event.target.value)
+                .then(response=>{ 
+                  setRouteDepartures(response.departuresData)
+                  setStopDetailInfo(response.stopData)
+                })
               }}
               defaultText="Select stop"
               data={routeStops}

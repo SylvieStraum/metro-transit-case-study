@@ -24,12 +24,12 @@
 
 .btn-collapsed{
   background-image: url(https://www.metrotransit.org/img/svg/circle-plus-blue.svg);
-  transition: background-image 300ms transform 300ms;
+  transition: background-image 300ms;
 }
 
 .btn-expanded{
   background-image: url(https://www.metrotransit.org/img/svg/circle-minus-blue.svg);
-  transition: background-image 300ms transform 300ms;
+  transition: background-image 300ms;
 }
 
 .tbl-expanded{
