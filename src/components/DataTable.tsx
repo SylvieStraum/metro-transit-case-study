@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { StopDetailProps, TimePointDepartureProps } from '../types/transitApitTypes';
-
+import { StopDetailProps, TimePointDepartureProps } from '../types/transitApiDataTypes';
 import '../App.css'
 
 interface TableProps {
@@ -22,10 +21,12 @@ export const DataTable = ({ data, stopInfo }: TableProps) => {
       <p><strong>stop #</strong> {stopInfo.StopID}</p>
     </TableLabelDiv>
   )
-
-
+   
   const tableBody = (
     !!data.length && data.map((item: TimePointDepartureProps, index: number) => {
+      if(!isExpanded && index>Math.min(data.length/2, 4)){
+        return
+      }
       return (
         <TableRow key={index}>
           <td style={{ width: '20%' }}>
@@ -99,6 +100,7 @@ const Container = styled.div`
 const Table = styled.table`
   border-spacing: 0;
   background-color: #f5f5f4;
+  transition: all 1s ease-in-out;
 
   vertical-align: middle;
   thead tr th {

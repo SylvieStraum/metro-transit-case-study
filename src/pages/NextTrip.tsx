@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios, { AxiosResponse } from 'axios';
-import { RouteProps, DirectionAndStopProps, TimePointDepartureProps, StopDetailProps } from '../types/transitApitTypes';
+import { RouteProps, DirectionAndStopProps, TimePointDepartureProps, StopDetailProps } from '../types/transitApiDataTypes';
 import { DataTable } from '../components/DataTable';
 import { CSSTransition } from 'react-transition-group';
 import { MetroSelect } from '../components/MetroSelect';
@@ -19,8 +18,13 @@ export const NextTrip = () => {
   const [stopDetailInfo, setStopDetailInfo] = useState<StopDetailProps>({})
 
   useEffect(() => {
-    fetchRoutes().then(response=> setAllRoutes(response))
+    initialRouteGet()
   }, [])
+
+  const initialRouteGet = async() =>{
+    let allRoutesResponse = await fetchRoutes()
+    if(allRoutesResponse?.data)  setAllRoutes(allRoutesResponse.data ?? [])
+  }
 
   const cascadeFilterReset = (num: number) => {
     switch (num) {
@@ -55,7 +59,7 @@ export const NextTrip = () => {
             cascadeFilterReset(1)
             setSelectedRoute(event.target.value)
             fetchRouteDirections(event.target.value)
-            .then(response=>setRouteDirections(response))
+            .then(response=> response?.success && setRouteDirections(response.data))
           }}
           defaultText="Select route"
           data={allRoutes}
@@ -74,7 +78,7 @@ export const NextTrip = () => {
                 cascadeFilterReset(2)
                 setSelectedDirection(event.target!.value)
                 fetchRouteStops(selectedRoute, event.target.value)
-                .then(response=> setRouteStops(response))
+                .then(response=> response?.success && setRouteStops(response.data))
               }}
               defaultText="Select direction"
               data={routeDirections}
@@ -96,8 +100,10 @@ export const NextTrip = () => {
                 setSelectedStop(event.target.value)
                 fetchRouteTimeDepartures(selectedRoute, selectedDirection, event.target.value)
                 .then(response=>{ 
-                  setRouteDepartures(response.departuresData)
-                  setStopDetailInfo(response.stopData)
+                  if(response?.success){
+                  setRouteDepartures(response.departuresData.data)
+                  setStopDetailInfo(response.stopDetailData.data)
+                  }
                 })
               }}
               defaultText="Select stop"
@@ -108,7 +114,7 @@ export const NextTrip = () => {
       </div>
       {
         <CSSTransition
-          in={!!selectedStop}
+          in={!!routeDepartures && !!stopDetailInfo.StopID}
           timeout={{ enter: 300, exit: 0 }}
           classNames="container"
           unmountOnExit
