@@ -7,23 +7,27 @@ import {
 } from 'react-router-dom';
 import { NextTrip } from './pages/NextTrip';
 import { DeparturesContextProvider } from './context/DeparturesProvider';
-import { DeparturesTable } from './pages/DeparturesTable';
+import { DeparturesPage } from './pages/DeparturesPage';
+import { HeaderNav } from './components/HeaderNav';
+import { FooterComponent } from './components/FooterComponent';
 
 function App() {
   return (
     <Router>
       <DeparturesContextProvider>
+        <HeaderNav/>
       <Switch>
         <Route path="/nextTrip">
           <NextTrip />
         </Route>
         <Route path="/BusTable">
-          <DeparturesTable />
+          <DeparturesPage />
         </Route>
         <Route path="*">
           <Redirect to="/nextTrip"/>
         </Route>
       </Switch>
+      <FooterComponent/>
       </DeparturesContextProvider>
     </Router>
   );

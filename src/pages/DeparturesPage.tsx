@@ -5,7 +5,7 @@ import { DataTable } from '../components/DataTable';
 import { DeparturesContext } from '../context/DeparturesProvider';
 
 
-export const DeparturesTable = () => {
+export const DeparturesPage = () => {
   const context = useContext(DeparturesContext)
   const history = useHistory()
 

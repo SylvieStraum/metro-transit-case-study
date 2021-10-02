@@ -19,9 +19,13 @@ export const NextTrip = () => {
   const [selectedRoute, setSelectedRoute] = useState<string>('')
   const [selectedDirection, setSelectedDirection] = useState<string>('')
   const [selectedStop, setSelectedStop] = useState<string>('')
-
+ 
   useEffect(() => {
-    initialRouteGet()
+    let mounted = true
+    if (mounted) {
+      initialRouteGet()
+    }
+   return ()=> {mounted = false}
   }, [])
 
   const initialRouteGet = async () => {
@@ -32,25 +36,24 @@ export const NextTrip = () => {
   const cascadeFilterReset = (num: number) => {
     switch (num) {
       case 1:
-        setRouteDirections([])
-        setRouteStops([])
-        setSelectedDirection('')
-        setSelectedStop('')
-        break;
+          setRouteDirections([])
+          setRouteStops([])
+          setSelectedDirection('')
+          setSelectedStop('')
+
+        return
       case 2:
-        setRouteStops([])
-        setSelectedStop('')
-        break;
-      default:
-        break;
+          setRouteStops([])
+          setSelectedStop('')
+
+        return
     }
   }
 
   return (
     <div className="main-content">
-      <img alt="metro transit home" src="https://www.metrotransit.org/img/MetroTransitLogo.svg" />
       <div style={{ width: '40%', minWidth: '400px', display: 'flex', flexDirection: 'column' }}>
-        <h2 style={{ textAlign: 'center' }}>Real Time Departures</h2>
+        <h1 style={{ textAlign: 'center' }}>Real Time Departures</h1>
         <MetroSelect
           className="slide-down-enter-done"
           value={selectedRoute}
@@ -58,7 +61,7 @@ export const NextTrip = () => {
             cascadeFilterReset(1)
             setSelectedRoute(event.target.value)
             fetchRouteDirections(event.target.value)
-              .then(response => response?.success && setRouteDirections(response.data))
+              .then(response => setRouteDirections(response.data))
           }}
           defaultText="Select route"
           data={allRoutes}
@@ -76,7 +79,7 @@ export const NextTrip = () => {
                 cascadeFilterReset(2)
                 setSelectedDirection(event.target!.value)
                 fetchRouteStops(selectedRoute, event.target.value)
-                  .then(response => response?.success && setRouteStops(response.data))
+                  .then(response => setRouteStops(response.data))
               }}
               defaultText="Select direction"
               data={routeDirections}
@@ -97,10 +100,8 @@ export const NextTrip = () => {
                 setSelectedStop(event.target.value)
                 fetchRouteTimeDepartures(selectedRoute, selectedDirection, event.target.value)
                   .then(response => {
-                    if (response?.success) {
                       departureContext.setRouteDepartures(response.departuresData.data)
                       departureContext.setStopDetailInfo(response.stopDetailData.data)
-                    }
                   })
               }}
               defaultText="Select stop"

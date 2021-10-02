@@ -14,7 +14,7 @@ export const DataTable = ({ data, stopInfo }: TableProps) => {
 
 
   const tableTitles: JSX.Element = (
-    <TableLabelDiv>
+    <TableLabelDiv aria-label="Table labels: stop # and description">
       <h3>
         {stopInfo.StopLabel}
       </h3>
@@ -25,7 +25,7 @@ export const DataTable = ({ data, stopInfo }: TableProps) => {
   const tableBody = (
     !!data.length && data.map((item: TimePointDepartureProps, index: number) => {
       if(!isExpanded && index>Math.min(data.length/2, 4)){
-        return
+        return<></>
       }
       return (
         <TableRow key={index}>
@@ -44,9 +44,9 @@ export const DataTable = ({ data, stopInfo }: TableProps) => {
   )
 
   const tblFooter: JSX.Element = (
-    <TableRow>
+    <TableRow aria-label="table footer element">
       <td colSpan={4}>
-        {data.length ? <>
+        {data.length>4 ? <>
           <OpenCloseBtn
             className={isExpanded ? 'btn-expanded' : 'btn-collapsed'}
             onClick={() => setIsExpanded(!isExpanded)} /> <strong>Departures</strong>
@@ -60,7 +60,7 @@ export const DataTable = ({ data, stopInfo }: TableProps) => {
 
   return <Container>
     {tableTitles}
-    <Table>
+    <Table aria-label="Bus departures table">
       <thead>
         <tr>
           <th style={{ width: '15%' }}>
