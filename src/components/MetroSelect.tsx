@@ -36,6 +36,8 @@ export const MetroSelect: React.FC<selectProps> = ({
 const StyledSelect = styled.select`
   background: url(${arrows})
   no-repeat right .75rem center/8px 10px;
+  background-color: #fff;
+  border: 1px solid #e3e3e0;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;

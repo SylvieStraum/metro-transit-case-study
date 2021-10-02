@@ -100,7 +100,6 @@ const Container = styled.div`
 const Table = styled.table`
   border-spacing: 0;
   background-color: #f5f5f4;
-  transition: all 1s ease-in-out;
 
   vertical-align: middle;
   thead tr th {
@@ -123,9 +122,6 @@ const Table = styled.table`
       padding-right: 1em;
     }
   }
-  tbody{
-    transition: all 1s ease-in-out;
-  }
 `
 
 const TableLabelDiv = styled.div`
@@ -133,6 +129,7 @@ const TableLabelDiv = styled.div`
   justify-content:space-between;
   flex-direction:row;
   align-items:center;
+  transition: all .5s ease-in-out;
   padding: 0 .75em 0 .75em;
   span{
     font-weight: 400;
