@@ -19,7 +19,7 @@ export const MetroSelect: React.FC<selectProps> = ({
 }) => {
   return (
     <StyledSelect
-      className={className}
+      className={`${className} metro-query-container`}
       value={value}
       onChange={(event) => onChange(event)}
     >
@@ -36,19 +36,7 @@ export const MetroSelect: React.FC<selectProps> = ({
 const StyledSelect = styled.select`
   background: url(${arrows})
   no-repeat right .75rem center/8px 10px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  vertical-align: middle;
-  margin-top: 20px;
-  width: 100%;
-  height: 50px;
-  font-size: 1.125rem!important;
-  padding: .75em;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #626462;
-  transition: background-color .5s ease-in-out,border-color .5s ease-in-out,box-shadow .5s ease-in-out, opacity .5s, transform .5s;
+  padding: .75rem;
 `
 const MetroOption = styled.option`
 font-weight: normal;
