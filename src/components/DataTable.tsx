@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { StopDetailProps, TimePointDepartureProps } from '../types/transitApiDataTypes';
 import '../App.css'
 import { useEffect } from 'react';
+import { useMemo } from 'react';
 
 interface TableProps {
   data: TimePointDepartureProps[]
@@ -23,6 +24,18 @@ export const DataTable = ({ data, stopInfo, bottomNav }: TableProps) => {
     })
   }, [])
 
+  const routesSortedByActualTime = useMemo(()=>{
+    return data.sort((a,b) => {
+      if(!!a.Actual && !!!b.Actual){
+        return -1
+      }
+      if(!!!a.Actual && !!b.Actual){
+        return 1
+      }
+      return 0
+    })
+  }, [data])
+
   const tableTitles: JSX.Element = (
     <TableLabelDiv aria-label="Table labels: stop # and description">
       <h3>
@@ -32,7 +45,7 @@ export const DataTable = ({ data, stopInfo, bottomNav }: TableProps) => {
     </TableLabelDiv>
   )
   const tableBody = (
-    data.length && data.map((item: TimePointDepartureProps, index: number) => {
+    !!data.length && routesSortedByActualTime.map((item: TimePointDepartureProps, index: number) => {
       if (!isExpanded && index > Math.min((data.length / 2), 4)) {
         return null
       }
@@ -55,7 +68,7 @@ export const DataTable = ({ data, stopInfo, bottomNav }: TableProps) => {
   const tblFooter: JSX.Element = (
     <TableRow aria-label="table footer element" key="footer">
       <td colSpan={4}>
-        {data.length ? <>
+        {!!data.length ? <>
           <OpenCloseBtn
             className={isExpanded ? 'btn-expanded' : 'btn-collapsed'}
             onClick={() => {
@@ -63,7 +76,7 @@ export const DataTable = ({ data, stopInfo, bottomNav }: TableProps) => {
             }} /> <strong>View more departures</strong>
         </>
           :
-          <p><strong>No departures at this time</strong></p>}
+          <strong>No departures at this time</strong>}
       </td>
     </TableRow>
   )
@@ -97,22 +110,25 @@ export const DataTable = ({ data, stopInfo, bottomNav }: TableProps) => {
 
 const Container = styled.div`
   transition: opacity .5s, transform .5s;
-  margin-top:40px;
-  margin-bottom:80px;
+  margin-top: 40px;
+  margin-bottom: 80px;
   background-color: #f5f5f4;
   display: flex;
   flex-direction: column;
   flex: 1;
   width: 70%;
+  min-width: 600px;
   text-align: left;
-  border:none;
+  border: none;
+  overflow-x: auto;
+
 `
 
 const Table = styled.table`
   border-spacing: 0;
   background-color: #f5f5f4;
-
   vertical-align: middle;
+
   thead tr th {
     background-color: #ffd200;
     border-top: none;
@@ -125,6 +141,8 @@ const Table = styled.table`
     min-width: 2em;
     padding: .75rem;
 
+    
+
     &:first-child {
       padding-left: 1em;
     }
@@ -136,10 +154,10 @@ const Table = styled.table`
 `
 
 const TableLabelDiv = styled.div`
-  display:flex;
-  justify-content:space-between;
-  flex-direction:row;
-  align-items:center;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
   transition: all .5s ease-in-out;
   padding: 0 .75em 0 .75em;
   span{
@@ -151,7 +169,11 @@ const TableLabelDiv = styled.div`
 
 const TableRow = styled.tr`
   height: 3em;
-  background-color: transparent ;
+  background-color: transparent;
+
+    td{
+      
+    }
 `
 
 const OpenCloseBtn = styled.button`

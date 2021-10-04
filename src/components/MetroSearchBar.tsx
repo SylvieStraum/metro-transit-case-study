@@ -3,30 +3,30 @@ import styled from 'styled-components'
 import '../App.css'
 
 interface MetroSearchBarProps {
-  setStopNumber:React.Dispatch<React.SetStateAction<string>>
+  setStopNumber: React.Dispatch<React.SetStateAction<string>>
   stopNumber: string
-  getTableData: () => Promise<void>
+  getTableData: (eventValue: string) => Promise<void>
 }
 
 export const MetroSearchBar = ({
-setStopNumber,
-stopNumber,
-getTableData
-}:MetroSearchBarProps) => {
+  setStopNumber,
+  stopNumber,
+  getTableData
+}: MetroSearchBarProps) => {
 
   return (
     <SearchContainer>
-      <StyledSearch className="metro-query-container" 
-      value={stopNumber} 
-      type="number"
-      placeholder="Enter stop number"
-      onChange={(e)=>setStopNumber(e.target.value)}/>
-      <SearchButton onClick={()=>{
+      <StyledSearch className="metro-query-container"
+        value={stopNumber}
+        type="number"
+        placeholder="Enter stop number"
+        onChange={(e) => setStopNumber(e.target.value)} />
+      <SearchButton onClick={() => {
+        getTableData(stopNumber)
         setStopNumber('')
-        getTableData()
       }}>
         <img alt="search button" src="https://www.metrotransit.org/img/svg/search-gray.svg" />
-        </SearchButton>
+      </SearchButton>
     </SearchContainer>
   )
 }

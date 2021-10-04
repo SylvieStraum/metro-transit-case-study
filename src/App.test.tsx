@@ -4,7 +4,7 @@ import { CSSTransition } from 'react-transition-group';
 import { MetroSelect } from './components/MetroSelect';
 import App from './App';
 import './App.css'
-import { fetchRouteDirections, fetchRoutes, fetchRouteStops, fetchRouteTimeDepartures, fetchStopDetails } from './services';
+import { fetchRouteDirections, fetchRoutes, fetchRouteStops, fetchRouteTimeDepartures, fetchStopDetails, fetchStopDetailsByStopNumber, fetchTimeDeparturesByStopNumber } from './services';
 
 test('api returns expected data when called', async () => {
 
@@ -13,12 +13,17 @@ test('api returns expected data when called', async () => {
   const stopsApi = await fetchRouteStops('901', '0')
   const departuresApi = await fetchRouteTimeDepartures('901', '0', 'MAAM')
   const stopDetalApi = await fetchStopDetails('901', '0', 'MAAM')
+  const departuresByStopNumberApi = await fetchTimeDeparturesByStopNumber(51405)
+  const stopDetalByStopNumberApi = await fetchStopDetailsByStopNumber(51405)
+  
   
   expect(routesApi?.data[0].Description === 'METRO Blue Line').toBe(true);
   expect(directionApi?.data[0].Text === 'Northbound').toBe(true);
   expect(stopsApi?.data[0].Text === 'Mall of America Station').toBe(true);
   expect(departuresApi?.data[0].Description === 'to Mpls-Target Field').toBe(true);
   expect(stopDetalApi?.data.StopLabel === 'MOA Transit Station').toBe(true);
+  expect(departuresByStopNumberApi?.data[0].Description === 'to Mpls-Target Field').toBe(true);
+  expect(stopDetalByStopNumberApi?.data.StopLabel === 'MOA Transit Station').toBe(true);
 });
 
 test('renders primary select', () => {

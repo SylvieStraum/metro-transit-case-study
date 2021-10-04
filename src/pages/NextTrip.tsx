@@ -14,6 +14,8 @@ import { MetroSearchBar } from '../components/MetroSearchBar';
 export const NextTrip = () => {
   const departureContext = useContext(DeparturesContext)
 
+  const [fetchStatus, setFetchStatus] = useState<boolean>(false)
+
   const [allRoutes, setAllRoutes] = useState<RouteProps[]>([])
   const [routeDirections, setRouteDirections] = useState<DirectionAndStopProps[]>([])
   const [routeStops, setRouteStops] = useState<DirectionAndStopProps[]>([])
@@ -24,6 +26,7 @@ export const NextTrip = () => {
   const [queryType, setQueryType] = useState<'select' | 'search'>('select')
 
   useEffect(() => {
+    setFetchStatus(false)
     initialRouteGet()
   }, [])
 
@@ -32,19 +35,20 @@ export const NextTrip = () => {
     if (allRoutesResponse?.data) setAllRoutes(allRoutesResponse.data ?? [])
   }
 
-  const getTableData = async () => {
+  const getTableData = async (evtValue?:any) => {
     let busDepartures
     let stopDetails
 
     if (queryType === 'select') {
-      busDepartures = await fetchRouteTimeDepartures(selectedRoute, selectedDirection, selectedStop)
-      stopDetails = await fetchStopDetails(selectedRoute, selectedDirection, selectedStop)
+      busDepartures = await fetchRouteTimeDepartures(selectedRoute, selectedDirection, evtValue)
+      stopDetails = await fetchStopDetails(selectedRoute, selectedDirection, evtValue)
     } else {
       busDepartures = await fetchTimeDeparturesByStopNumber(parseInt(stopNumber))
       stopDetails = await fetchStopDetailsByStopNumber(parseInt(stopNumber))
     }
     departureContext.setStopDetailInfo(stopDetails.data)
     departureContext.setRouteDepartures(busDepartures.data)
+    setFetchStatus(true)
   }
 
   const handleSelect = (event: any, key: number) => {
@@ -67,7 +71,7 @@ export const NextTrip = () => {
         break;
       case 3:
         setSelectedStop(event.target.value)
-        getTableData()
+        getTableData(event.target.value)
         break;
       default:
         break;
@@ -130,7 +134,7 @@ export const NextTrip = () => {
         }
       </div>
       <CSSTransition
-        in={parseInt(stopNumber) === departureContext.stopDetailInfo.StopID || !!selectedStop}
+        in={fetchStatus}
         timeout={{ enter: 300, exit: 0 }}
         classNames="container"
         unmountOnExit
