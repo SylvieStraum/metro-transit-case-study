@@ -12,15 +12,6 @@ export const DeparturesPage = () => {
   const departures = departureContext.routeDepartures
   const stopInfo = departureContext.stopDetailInfo
 
-  // useEffect(() => {
-  //   if (routeParams.stopId) {
-  //     departureContext.getDeparturesAndStopDetailsByStopId(routeParams.stopId)
-  //     if (routeParams.route && routeParams.direction && routeParams.stopBase) {
-  //       departureContext.getDeparturesAndStopDetailsByRoute(routeParams.route, routeParams.direction, routeParams.stopBase)
-  //     }
-  //   }
-  // }, [])
-
   return (
     <div className="main-content">
       <CSSTransition
