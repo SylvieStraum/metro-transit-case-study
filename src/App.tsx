@@ -16,14 +16,14 @@ function App() {
       <DeparturesContextProvider>
         <HeaderNav/>
       <Switch>
-        <Route path="/nextTrip">
+        <Route path="/nexttrip">
           <NextTrip />
         </Route>
-        <Route path="/BusTable">
+        <Route path="/busdepartures">
           <DeparturesPage />
         </Route>
         <Route path="*">
-          <Redirect to="/nextTrip"/>
+          <Redirect to="/nexttrip"/>
         </Route>
       </Switch>
       </DeparturesContextProvider>

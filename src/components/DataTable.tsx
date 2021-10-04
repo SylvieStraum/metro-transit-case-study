@@ -72,7 +72,7 @@ export const DataTable = ({ data, stopInfo, bottomNav }: TableProps) => {
           <OpenCloseBtn
             className={isExpanded ? 'btn-expanded' : 'btn-collapsed'}
             onClick={() => {
-              bottomNav ? history.push(bottomNav) : setIsExpanded(!isExpanded)
+              bottomNav ?history.push(bottomNav) : setIsExpanded(!isExpanded)
             }} /> <strong>View more departures</strong>
         </>
           :
