@@ -14,7 +14,7 @@ import { MultiSelectComponent } from '../components/MultiSelectComponent';
 
 export const NextTrip = () => {
   const departureContext = useContext(DeparturesContext)
-  
+
   const [fetchStatus, setFetchStatus] = useState<boolean>(false)
 
   const [routeDirections, setRouteDirections] = useState<DirectionAndStopProps[]>([])
@@ -31,7 +31,7 @@ export const NextTrip = () => {
     departureContext.getAllRoutes()
   }, [])
 
-  const getTableData = (finalVal:string) => {
+  const getTableData = (finalVal: string) => {
     //use finalVal as sometimes the state doesn't update in time and causes minor error for last value 
     if (queryType === 'select') {
       departureContext.getDeparturesAndStopDetailsByRoute(selectedRoute, selectedDirection, finalVal)
@@ -80,25 +80,26 @@ export const NextTrip = () => {
       <div className="route-select-container">
         {
           queryType === 'select' ?
-            <MultiSelectComponent 
-            route={selectedRoute}
-            direction={selectedDirection}
-            stop={selectedStop}
-            allRoutes={departureContext.allRoutes}
-            directionData={routeDirections}
-            stopData={routeStops}
-            handleSelect={handleSelect}
+            <MultiSelectComponent
+              route={selectedRoute}
+              direction={selectedDirection}
+              stop={selectedStop}
+              allRoutes={departureContext.allRoutes}
+              directionData={routeDirections}
+              stopData={routeStops}
+              handleSelect={handleSelect}
             />
             :
             <MetroSearchBar
               setStopNumber={setStopNumber}
               stopNumber={stopNumber}
               getTableData={getTableData}
+              error={departureContext.searchError}
             />
         }
       </div>
       <CSSTransition
-        in={fetchStatus}
+        in={queryType === 'search' ? !!!departureContext.searchError && fetchStatus : fetchStatus}
         timeout={{ enter: 300, exit: 0 }}
         classNames="container"
         unmountOnExit
