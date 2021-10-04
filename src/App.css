@@ -38,9 +38,9 @@
 .metro-button{
   color: #626462;
   background-color: transparent;
-  font-size: .8rem!important;
+  font-size: 1rem!important;
   border: 2px solid #0097d0;
-  padding: .5rem 3rem;
+  padding: 1rem 2rem;
   max-width: 300px;
   min-width: 150px;
   margin-top:20px;

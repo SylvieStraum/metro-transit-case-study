@@ -5,7 +5,7 @@ import '../App.css'
 interface MetroSearchBarProps {
   setStopNumber: React.Dispatch<React.SetStateAction<string>>
   stopNumber: string
-  getTableData: (eventValue: string) => Promise<void>
+  getTableData: (val:string) => void
 }
 
 export const MetroSearchBar = ({

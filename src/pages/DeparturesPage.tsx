@@ -6,11 +6,20 @@ import { DeparturesContext } from '../context/DeparturesProvider';
 
 
 export const DeparturesPage = () => {
-  const context = useContext(DeparturesContext)
+  const departureContext = useContext(DeparturesContext)
   const history = useHistory()
 
-  const departures = context.routeDepartures
-  const stopInfo = context.stopDetailInfo
+  const departures = departureContext.routeDepartures
+  const stopInfo = departureContext.stopDetailInfo
+
+  // useEffect(() => {
+  //   if (routeParams.stopId) {
+  //     departureContext.getDeparturesAndStopDetailsByStopId(routeParams.stopId)
+  //     if (routeParams.route && routeParams.direction && routeParams.stopBase) {
+  //       departureContext.getDeparturesAndStopDetailsByRoute(routeParams.route, routeParams.direction, routeParams.stopBase)
+  //     }
+  //   }
+  // }, [])
 
   return (
     <div className="main-content">

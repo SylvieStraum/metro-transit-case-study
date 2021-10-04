@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { RouteProps, DirectionAndStopProps } from '../types/transitApiDataTypes';
+import { DirectionAndStopProps } from '../types/transitApiDataTypes';
 import { CSSTransition } from 'react-transition-group';
 import { MetroSelect } from '../components/MetroSelect';
 
 import '../App.css'
-import { fetchRouteDirections, fetchRoutes, fetchRouteStops, fetchRouteTimeDepartures, fetchStopDetails, fetchStopDetailsByStopNumber, fetchTimeDeparturesByStopNumber } from '../services';
+import { fetchRouteDirections, fetchRouteStops } from '../services';
 import { useContext } from 'react';
 import { DeparturesContext } from '../context/DeparturesProvider';
 import { DataTable } from '../components/DataTable';
@@ -16,7 +16,6 @@ export const NextTrip = () => {
 
   const [fetchStatus, setFetchStatus] = useState<boolean>(false)
 
-  const [allRoutes, setAllRoutes] = useState<RouteProps[]>([])
   const [routeDirections, setRouteDirections] = useState<DirectionAndStopProps[]>([])
   const [routeStops, setRouteStops] = useState<DirectionAndStopProps[]>([])
   const [selectedRoute, setSelectedRoute] = useState<string>('')
@@ -27,27 +26,15 @@ export const NextTrip = () => {
 
   useEffect(() => {
     setFetchStatus(false)
-    initialRouteGet()
+    departureContext.getAllRoutes()
   }, [])
 
-  const initialRouteGet = async () => {
-    let allRoutesResponse = await fetchRoutes()
-    if (allRoutesResponse?.data) setAllRoutes(allRoutesResponse.data ?? [])
-  }
-
-  const getTableData = async (evtValue?: any) => {
-    let busDepartures
-    let stopDetails
-
+  const getTableData = (val:string) => {
     if (queryType === 'select') {
-      busDepartures = await fetchRouteTimeDepartures(selectedRoute, selectedDirection, evtValue)
-      stopDetails = await fetchStopDetails(selectedRoute, selectedDirection, evtValue)
+      departureContext.getDeparturesAndStopDetailsByRoute(selectedRoute, selectedDirection, val)
     } else {
-      busDepartures = await fetchTimeDeparturesByStopNumber(parseInt(stopNumber))
-      stopDetails = await fetchStopDetailsByStopNumber(parseInt(stopNumber))
+      departureContext.getDeparturesAndStopDetailsByStopId(val)
     }
-    departureContext.setStopDetailInfo(stopDetails.data)
-    departureContext.setRouteDepartures(busDepartures.data)
     setFetchStatus(true)
   }
 
@@ -93,7 +80,7 @@ export const NextTrip = () => {
                 value={selectedRoute}
                 onChange={(event) => handleSelect(event, 1)}
                 defaultText="Select route"
-                data={allRoutes}
+                data={departureContext.allRoutes}
               />
               <CSSTransition
                 in={!!selectedRoute}
@@ -141,7 +128,7 @@ export const NextTrip = () => {
         <DataTable
           data={departureContext.routeDepartures.slice(0, 1)}
           stopInfo={departureContext.stopDetailInfo}
-          bottomNav={departureContext.routeDepartures.length > 1 ? 'BusTable' : ''} />
+          bottomNav={departureContext.routeDepartures.length > 1 ? `busDepartures` : ''} />
       </CSSTransition>
     </div>
   )

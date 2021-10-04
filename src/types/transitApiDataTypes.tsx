@@ -1,15 +1,15 @@
- export interface RouteProps {
+export interface RouteProps {
   Description?: string,
   ProviderID?: number,
   Route?: string
 }
 
- export interface DirectionAndStopProps {
+export interface DirectionAndStopProps {
   Text?: string,
   Value?: string
 }
 
- export interface TimePointDepartureProps{
+export interface TimePointDepartureProps {
   Actual?: boolean
   BlockNumber?: number
   DepartureText?: string
@@ -24,7 +24,7 @@
   VehicleLongitude?: number
 }
 
- export interface StopDetailProps{
+export interface StopDetailProps {
   Latitude?: number
   Longitude?: number
   StopID?: number
