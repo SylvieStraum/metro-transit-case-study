@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import { CSSTransition } from 'react-transition-group';
-import { MetroSelect } from './components/MetroSelect';
+import { MetroSelect } from './components/forms/MetroSelect';
 import App from './App';
 import './App.css'
 import { fetchRouteDirections, fetchRoutes, fetchRouteStops, fetchRouteTimeDepartures, fetchStopDetails, fetchStopDetailsByStopNumber, fetchTimeDeparturesByStopNumber } from './services';

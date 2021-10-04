@@ -11,6 +11,10 @@ import { DeparturesPage } from './pages/DeparturesPage';
 import { HeaderNav } from './components/HeaderNav';
 
 function App() {
+  //welcome to my app
+  //I have simple routing between two pages
+  //one for searching
+  //and one for content display
   return (
     <Router>
       <DeparturesContextProvider>

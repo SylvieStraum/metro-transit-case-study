@@ -10,20 +10,21 @@ export const QuerySelector = ({
   queryType,
   setQueryType
 }: QuerySelectorProps) => {
-
+//A simple custom toggle to mimic metro transits toggle nav
+//uses styled components css from styled component to give the active and after effects to the <a/> 
   return (
-    <NavContainer>
-      <ListNav>
+    <TogglContainer>
+      <ToggleItem>
         <LowerPointer onClick={() => setQueryType('select')}
           title={`${queryType === 'select'}`}
         >By route</LowerPointer>
-      </ListNav>
-      <ListNav>
+      </ToggleItem>
+      <ToggleItem>
         <LowerPointer onClick={() => setQueryType('search')}
           title={`${queryType === 'search'}`}
         >By stop #</LowerPointer>
-      </ListNav>
-    </NavContainer>
+      </ToggleItem>
+    </TogglContainer>
   )
 }
 
@@ -57,13 +58,13 @@ ${props => props.title === 'true' && css`
 `
 
 
-const ListNav = styled.li`
+const ToggleItem = styled.li`
 box-sizing: border-box;
 display: list-item;
 list-style: none;
 word-wrap: break-word;
 `
-const NavContainer = styled.ul`
+const TogglContainer = styled.ul`
 display: flex;
 justify-self:center;
 margin-bottom: 20px;

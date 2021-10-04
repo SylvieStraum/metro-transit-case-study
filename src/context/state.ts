@@ -26,6 +26,7 @@ type DeparturesProviderAction =
   }
 
 export const useDepartureProviderState = () => {
+  //reducer establishes base items with local storage and commits it there to reduce the need to ping API for info 
   return useReducer(
     (prevState: DeparturesProviderState, action: DeparturesProviderAction): DeparturesProviderState => {
       switch (action.type) {

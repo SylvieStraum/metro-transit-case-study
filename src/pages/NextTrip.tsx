@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { DirectionAndStopProps } from '../types/transitApiDataTypes';
 import { CSSTransition } from 'react-transition-group';
-import { MetroSelect } from '../components/MetroSelect';
+import { MetroSelect } from '../components/forms/MetroSelect';
 
 import '../App.css'
 import { fetchRouteDirections, fetchRouteStops } from '../services';
@@ -9,11 +9,12 @@ import { useContext } from 'react';
 import { DeparturesContext } from '../context/DeparturesProvider';
 import { DataTable } from '../components/DataTable';
 import { QuerySelector } from '../components/QuerySelector';
-import { MetroSearchBar } from '../components/MetroSearchBar';
+import { MetroSearchBar } from '../components/forms/MetroSearchBar';
+import { MultiSelectComponent } from '../components/MultiSelectComponent';
 
 export const NextTrip = () => {
   const departureContext = useContext(DeparturesContext)
-
+  
   const [fetchStatus, setFetchStatus] = useState<boolean>(false)
 
   const [routeDirections, setRouteDirections] = useState<DirectionAndStopProps[]>([])
@@ -25,20 +26,25 @@ export const NextTrip = () => {
   const [queryType, setQueryType] = useState<'select' | 'search'>('select')
 
   useEffect(() => {
+    //state to tell if we should see search results below. default to false as we only want current result on this page
     setFetchStatus(false)
     departureContext.getAllRoutes()
   }, [])
 
-  const getTableData = (val:string) => {
+  const getTableData = (finalVal:string) => {
+    //use finalVal as sometimes the state doesn't update in time and causes minor error for last value 
     if (queryType === 'select') {
-      departureContext.getDeparturesAndStopDetailsByRoute(selectedRoute, selectedDirection, val)
+      departureContext.getDeparturesAndStopDetailsByRoute(selectedRoute, selectedDirection, finalVal)
     } else {
-      departureContext.getDeparturesAndStopDetailsByStopId(val)
+      departureContext.getDeparturesAndStopDetailsByStopId(finalVal)
     }
+    //after everything is fired allow first result to be displayed below
     setFetchStatus(true)
   }
 
   const handleSelect = (event: any, key: number) => {
+    //a little hacky but just a state reset if you interact with a previous select while others have active info. 
+    //this reduces sending out bad requests
     switch (key) {
       case 1:
         setRouteDirections([])
@@ -74,42 +80,15 @@ export const NextTrip = () => {
       <div className="route-select-container">
         {
           queryType === 'select' ?
-            <>
-              <MetroSelect
-                className="slide-down-enter-done"
-                value={selectedRoute}
-                onChange={(event) => handleSelect(event, 1)}
-                defaultText="Select route"
-                data={departureContext.allRoutes}
-              />
-              <CSSTransition
-                in={!!selectedRoute}
-                timeout={{ enter: 300, exit: 0 }}
-                classNames="slide-down"
-                unmountOnExit
-                mountOnEnter
-              ><MetroSelect
-                  value={selectedDirection}
-                  onChange={(event) => handleSelect(event, 2)}
-                  defaultText="Select direction"
-                  data={routeDirections}
-                />
-              </CSSTransition>
-              <CSSTransition
-                in={!!selectedDirection}
-                timeout={{ enter: 300, exit: 0 }}
-                classNames="slide-down"
-                unmountOnExit
-                mountOnEnter
-              >
-                <MetroSelect
-                  value={selectedStop}
-                  onChange={(event) => handleSelect(event, 3)}
-                  defaultText="Select stop"
-                  data={routeStops}
-                />
-              </CSSTransition>
-            </>
+            <MultiSelectComponent 
+            route={selectedRoute}
+            direction={selectedDirection}
+            stop={selectedStop}
+            allRoutes={departureContext.allRoutes}
+            directionData={routeDirections}
+            stopData={routeStops}
+            handleSelect={handleSelect}
+            />
             :
             <MetroSearchBar
               setStopNumber={setStopNumber}
