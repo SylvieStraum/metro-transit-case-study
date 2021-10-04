@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import '../App.css'
+import './Form.css'
 
 interface MetroSearchBarProps {
   setStopNumber: React.Dispatch<React.SetStateAction<string>>
@@ -13,7 +13,7 @@ export const MetroSearchBar = ({
   stopNumber,
   getTableData
 }: MetroSearchBarProps) => {
-
+  //simple styled component that only is responsible for the rendering of the searchBar and firing off searches based off stopId
   return (
     <SearchContainer>
       <StyledSearch className="metro-query-container"

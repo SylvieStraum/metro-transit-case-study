@@ -1,6 +1,6 @@
 import styled from 'styled-components'
-import arrows from '../assets/arrows.svg'
-import '../App.css'
+import arrows from '../../assets/arrows.svg'
+import './Form.css'
 
 interface selectProps {
   onChange: (event: any) => void
@@ -17,6 +17,9 @@ export const MetroSelect: React.FC<selectProps> = ({
   value,
   data,
 }) => {
+  // styled form that is responsible for the rendering of the select components 
+  // and firing off searches based off route, direction, and stop 
+  //passes in className for transitions for css transition as well
   return (
     <StyledSelect
       className={`${className} metro-query-container`}

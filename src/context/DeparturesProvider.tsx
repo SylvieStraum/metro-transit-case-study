@@ -22,6 +22,7 @@ export const DeparturesContextProvider: React.FC = ({ children }) => {
   const [state, dispatch] = useDepartureProviderState()
 
   const getAllRoutes = async () => {
+    //fetches all routes if it does not already in reducer
     if (state.allRoutes.length) {
       return
     }
@@ -31,6 +32,7 @@ export const DeparturesContextProvider: React.FC = ({ children }) => {
   }
 
   const getDeparturesAndStopDetailsByRoute = async (route: string, direction: string, stop: string) => {
+      //fetches stop details and departure list if it does not already in reducer by route selections
     const departureResponse = await fetchRouteTimeDepartures(route, direction, stop)
     const stopResponse = await fetchStopDetails(route, direction, stop)
     dispatch({ type: 'SET_STOP_DETAILS', payload: { stopDetailInfo: stopResponse.data } })
@@ -38,6 +40,7 @@ export const DeparturesContextProvider: React.FC = ({ children }) => {
   }
 
   const getDeparturesAndStopDetailsByStopId = async (stopId: string) => {
+    //fetches stop details and departure list if it does not already in reducer by stopId # 
     const departureResponse = await fetchTimeDeparturesByStopNumber(parseInt(stopId))
     const stopResponse = await fetchStopDetailsByStopNumber(parseInt(stopId))
 

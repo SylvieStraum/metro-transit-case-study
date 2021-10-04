@@ -17,6 +17,7 @@ export const DataTable = ({ data, stopInfo, bottomNav }: TableProps) => {
   const [isExpanded, setIsExpanded] = useState(false)
 
   useEffect(() => {
+    //page isn't large but wanted to scroll to top to show off the table easily upon reaching this page
     window.scrollTo({
       top: 0,
       left: 0,
@@ -25,6 +26,8 @@ export const DataTable = ({ data, stopInfo, bottomNav }: TableProps) => {
   }, [])
 
   const routesSortedByActualTime = useMemo(()=>{
+    //puts routes with actual time information first showing relative times at the top 
+    //I initially thought all data was already filtered this way by the api but it was not
     return data.sort((a,b) => {
       if(!!a.Actual && !!!b.Actual){
         return -1
@@ -45,8 +48,10 @@ export const DataTable = ({ data, stopInfo, bottomNav }: TableProps) => {
     </TableLabelDiv>
   )
   const tableBody = (
+    //creates the tables body if the data exists. 
+    //also creates an expandable table by displaying half of the table length or 4 item (whichever is lower)
     !!data.length && routesSortedByActualTime.map((item: TimePointDepartureProps, index: number) => {
-      if (!isExpanded && index > Math.min((data.length / 2), 4)) {
+      if (!isExpanded && index > Math.min(Math.floor(data.length / 2), 4)) {
         return null
       }
       return (
@@ -66,6 +71,8 @@ export const DataTable = ({ data, stopInfo, bottomNav }: TableProps) => {
   )
 
   const tblFooter: JSX.Element = (
+    //this is either a button to nav to the table page or to expand the table
+    //or to show no items exist
     <TableRow aria-label="table footer element" key="footer">
       <td colSpan={4}>
         {!!data.length ? <>
