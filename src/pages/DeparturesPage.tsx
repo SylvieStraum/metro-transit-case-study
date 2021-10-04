@@ -14,17 +14,17 @@ export const DeparturesPage = () => {
 
   return (
     <div className="main-content">
-      <button className="metro-button" style={{width:'30%'}} onClick={()=>history.push('/')} >Find another route</button>
       <CSSTransition
-      in={!!stopInfo.StopID}
-      timeout={{ enter: 300, exit: 0 }}
-      classNames="container"
-      unmountOnExit
-      mountOnEnter
-    >
-      <DataTable data={departures} stopInfo={stopInfo} />
-    </CSSTransition>
+        in={!!stopInfo.StopID}
+        timeout={{ enter: 300, exit: 0 }}
+        classNames="container"
+        unmountOnExit
+        mountOnEnter
+      >
+        <DataTable data={departures} stopInfo={stopInfo} />
+      </CSSTransition>
+      <button className="metro-button" style={{ width: '30%' }} onClick={() => history.push('/')} >Find another route</button>
     </div>
-    
+
   )
 }

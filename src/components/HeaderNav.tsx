@@ -1,10 +1,12 @@
 import styled from 'styled-components';
+import { useHistory } from 'react-router';
 
 export const HeaderNav =() =>{
+  const history = useHistory()
 
   return(
     <Header aria-label="nav">
-            <img alt="metro transit Logo" src="https://www.metrotransit.org/img/MetroTransitLogo.svg" />
+            <img alt="metro transit Logo" src="https://www.metrotransit.org/img/MetroTransitLogo.svg" onClick={()=>history.push('/')}/>
     </Header>
   )
   

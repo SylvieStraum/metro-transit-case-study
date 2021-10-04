@@ -1,16 +1,10 @@
 # Welcome to my metro transit api case study!
 
 # How to start up this application:
--once downloaded via zip or github open up in your ide of choice (I use VS code).
-
--run 'npm install' from the root directory of the project in your terminal to download the necessary packages .
-
--Once finished downloading run 'yarn start' or 'npm start' to start up the project. 
-
--you can navigate to this project in your browser at localhost:3000
+- Download via zip file or clone from github. Once you are in the project run `npm install` to install the necessary packages.
 
 # Running the tests
--use the command npm test in the terminal to run the tests inside of api.test.tsx
+-use the command `npm test` in the terminal to run the tests inside of api.test.tsx
 
 
 # List of assumptions I made while developing this app:

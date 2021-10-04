@@ -1,17 +1,27 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 import { StopDetailProps, TimePointDepartureProps } from '../types/transitApiDataTypes';
 import '../App.css'
+import { useEffect } from 'react';
 
 interface TableProps {
   data: TimePointDepartureProps[]
   stopInfo: StopDetailProps
+  bottomNav?: string
 }
 
-export const DataTable = ({ data, stopInfo }: TableProps) => {
-
+export const DataTable = ({ data, stopInfo, bottomNav }: TableProps) => {
+  const history = useHistory()
   const [isExpanded, setIsExpanded] = useState(false)
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    })
+  }, [])
 
   const tableTitles: JSX.Element = (
     <TableLabelDiv aria-label="Table labels: stop # and description">
@@ -21,14 +31,13 @@ export const DataTable = ({ data, stopInfo }: TableProps) => {
       <p><strong>stop #</strong> {stopInfo.StopID}</p>
     </TableLabelDiv>
   )
-   
   const tableBody = (
-    !!data.length && data.map((item: TimePointDepartureProps, index: number) => {
-      if(!isExpanded && index>Math.min(data.length/2, 4)){
-        return<></>
+    data.length && data.map((item: TimePointDepartureProps, index: number) => {
+      if (!isExpanded && index > Math.min((data.length / 2), 4)) {
+        return null
       }
       return (
-        <TableRow key={index}>
+        <TableRow key={item.DepartureText}>
           <td style={{ width: '20%' }}>
             <strong>{item.Route}</strong>
           </td>
@@ -44,12 +53,14 @@ export const DataTable = ({ data, stopInfo }: TableProps) => {
   )
 
   const tblFooter: JSX.Element = (
-    <TableRow aria-label="table footer element">
+    <TableRow aria-label="table footer element" key="footer">
       <td colSpan={4}>
-        {data.length>4 ? <>
+        {data.length ? <>
           <OpenCloseBtn
             className={isExpanded ? 'btn-expanded' : 'btn-collapsed'}
-            onClick={() => setIsExpanded(!isExpanded)} /> <strong>Departures</strong>
+            onClick={() => {
+              bottomNav ? history.push(bottomNav) : setIsExpanded(!isExpanded)
+            }} /> <strong>View more departures</strong>
         </>
           :
           <p><strong>No departures at this time</strong></p>}
@@ -62,7 +73,7 @@ export const DataTable = ({ data, stopInfo }: TableProps) => {
     {tableTitles}
     <Table aria-label="Bus departures table">
       <thead>
-        <tr>
+        <TableRow key="table header">
           <th style={{ width: '15%' }}>
             Route
           </th>
@@ -72,7 +83,7 @@ export const DataTable = ({ data, stopInfo }: TableProps) => {
           <th style={{ width: '15%' }}>
             Departs
           </th>
-        </tr>
+        </TableRow>
       </thead>
       <tbody className={isExpanded ? 'tbl-expanded' : 'tbl-collapsed'}>
         {tableBody}

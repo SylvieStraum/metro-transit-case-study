@@ -9,7 +9,6 @@ import { NextTrip } from './pages/NextTrip';
 import { DeparturesContextProvider } from './context/DeparturesProvider';
 import { DeparturesPage } from './pages/DeparturesPage';
 import { HeaderNav } from './components/HeaderNav';
-import { FooterComponent } from './components/FooterComponent';
 
 function App() {
   return (
@@ -27,7 +26,6 @@ function App() {
           <Redirect to="/nextTrip"/>
         </Route>
       </Switch>
-      <FooterComponent/>
       </DeparturesContextProvider>
     </Router>
   );
