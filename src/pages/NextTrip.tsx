@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { DirectionAndStopProps } from '../types/transitApiDataTypes';
 import { CSSTransition } from 'react-transition-group';
-import { MetroSelect } from '../components/forms/MetroSelect';
 
 import '../App.css'
 import { fetchRouteDirections, fetchRouteStops } from '../services';

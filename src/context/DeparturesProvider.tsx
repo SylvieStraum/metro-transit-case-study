@@ -1,5 +1,4 @@
 import React from "react";
-import { useEffect } from "react";
 import { fetchRoutes, fetchRouteTimeDepartures, fetchStopDetails, fetchStopDetailsByStopNumber, fetchTimeDeparturesByStopNumber } from "../services";
 import { TimePointDepartureProps, StopDetailProps, RouteProps } from '../types/transitApiDataTypes';
 import { useDepartureProviderState } from './state'
