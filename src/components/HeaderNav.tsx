@@ -18,4 +18,5 @@ flex-wrap: wrap;
 align-items: center;
 justify-content: flex-start;
 padding: .5rem .75rem;
+cursor: pointer;
 `
