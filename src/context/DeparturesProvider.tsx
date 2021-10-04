@@ -52,7 +52,6 @@ export const DeparturesContextProvider: React.FC = ({ children }) => {
     dispatch({ type: 'SET_STOP_DETAILS', payload: { stopDetailInfo: stopResponse.data } })
     dispatch({ type: 'SET_DEPARTURES', payload: { routeDepartures: departureResponse.data } })
     }catch(e:any){
-      console.log(e)
       dispatch({type:'SET_SEARCH_ERROR', payload:{searchError:{error:e,stopId:parseInt(stopId)}}})
     }
   }
