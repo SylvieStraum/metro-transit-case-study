@@ -105,6 +105,7 @@ export const NextTrip = () => {
         mountOnEnter
       >
         <DataTable
+          totalLength={departureContext.routeDepartures.length}
           data={departureContext.routeDepartures.slice(0, 1)}
           stopInfo={departureContext.stopDetailInfo}
           bottomNav={departureContext.routeDepartures.length > 1 ? `busDepartures` : ''} />

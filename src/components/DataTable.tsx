@@ -7,12 +7,13 @@ import { useEffect } from 'react';
 import { useMemo } from 'react';
 
 interface TableProps {
+  totalLength : number
   data: TimePointDepartureProps[]
   stopInfo: StopDetailProps
   bottomNav?: string
 }
 
-export const DataTable = ({ data, stopInfo, bottomNav }: TableProps) => {
+export const DataTable = ({ data, stopInfo, bottomNav, totalLength }: TableProps) => {
   const history = useHistory()
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -75,7 +76,7 @@ export const DataTable = ({ data, stopInfo, bottomNav }: TableProps) => {
     //or to show no items exist
     <TableRow aria-label="table footer element" key="footer">
       <td colSpan={4}>
-        {!!data.length ? <>
+        {!!data.length ? totalLength >1 && <>
           <OpenCloseBtn
             className={isExpanded ? 'btn-expanded' : 'btn-collapsed'}
             onClick={() => {

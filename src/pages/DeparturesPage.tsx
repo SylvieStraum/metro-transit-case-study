@@ -13,7 +13,7 @@ export const DeparturesPage = () => {
   //simple page to render the dataTable and a button to return to the search page
   return (
     <div className="main-content">
-      <DataTable data={departures} stopInfo={stopInfo} />
+      <DataTable data={departures} stopInfo={stopInfo} totalLength={departures.length}/>
       <button className="metro-button" onClick={() => history.push('/')} >Find another route</button>
     </div>
 
