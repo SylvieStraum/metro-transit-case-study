@@ -6,8 +6,9 @@
   padding-top:5%;
   padding-bottom: 10%;
   overflow-y: auto; 
+  overflow-x: scroll;
+  white-space: nowrap;
   flex-direction:column; 
-  -webkit-overflow-scrolling: touch;
 }
 
 .route-select-container{

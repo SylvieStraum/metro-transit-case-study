@@ -35,7 +35,7 @@ export const NextTrip = () => {
     if (allRoutesResponse?.data) setAllRoutes(allRoutesResponse.data ?? [])
   }
 
-  const getTableData = async (evtValue?:any) => {
+  const getTableData = async (evtValue?: any) => {
     let busDepartures
     let stopDetails
 
@@ -80,11 +80,9 @@ export const NextTrip = () => {
   }
   return (
     <div className="main-content">
-      <div className="query-type">
-        <QuerySelector
-          setQueryType={setQueryType}
-          queryType={queryType} />
-      </div>
+      <QuerySelector
+        setQueryType={setQueryType}
+        queryType={queryType} />
       <h1 style={{ textAlign: 'center' }}>Real Time Departures</h1>
       <div className="route-select-container">
         {

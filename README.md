@@ -11,7 +11,7 @@
 
 -The API is fully functional and will not go down during my intended use of it.
 
-- The application was intended fully for Web use-while it is responsive-it is not fully compatible with mobile. 
+- The application was intended for Web use.
 
 - Users understand the symbols used/know the app's intended use.
 

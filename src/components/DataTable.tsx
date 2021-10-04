@@ -120,7 +120,6 @@ const Container = styled.div`
   min-width: 600px;
   text-align: left;
   border: none;
-  overflow-x: auto;
 
 `
 
@@ -171,8 +170,8 @@ const TableRow = styled.tr`
   height: 3em;
   background-color: transparent;
 
-    td{
-      
+    th{
+      font-size: 1.25rem!important;
     }
 `
 

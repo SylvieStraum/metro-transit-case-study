@@ -65,13 +65,8 @@ word-wrap: break-word;
 `
 const NavContainer = styled.ul`
 display: flex;
-flex-wrap: wrap;
-padding-left: 0;
-margin-bottom: 0;
-list-style: none;
-margin-block-start: 1em;
-margin-block-end: 1em;
-margin-inline-start: 0px;
-margin-inline-end: 0px;
-padding-inline-start: 40px;
+justify-self:center;
+margin-bottom: 20px;
+align-self:center;
+padding:.5rem;
 `
