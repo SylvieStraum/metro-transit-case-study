@@ -124,7 +124,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  width: 70%;
+  width: 60%;
   min-width: 600px;
   text-align: left;
   border: none;
@@ -135,6 +135,7 @@ const Table = styled.table`
   border-spacing: 0;
   background-color: #f5f5f4;
   vertical-align: middle;
+  width:100%;
 
   thead tr th {
     background-color: #ffd200;
